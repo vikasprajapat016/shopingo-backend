@@ -17,7 +17,6 @@ import offerRoute from "./routes/offerRoute.js"
 import userOfferRoutes from "./routes/userOfferRoutes.js";
 import sliderRoute from "./routes/sliderRoute.js"
 const app = express()
-const port = 3002
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
@@ -53,6 +52,9 @@ app.use("/user", userOfferRoutes)
 
 
 app.use("/create", migrateCategoryIds)
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
+
