@@ -38,7 +38,7 @@ connectDB()
 app.use(cors({
     origin: allowedOrigins,
     methods: ["GET", 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true // ✅ required for cookies
+    credentials: true 
 }))
 app.use("/uploads", express.static("uploads"));
 app.use("/user" , authRoutes);
