@@ -94,12 +94,15 @@ export const signIn = async(req, res) => {
             {expiresIn: "1d"},
         )
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: false,
-            sameSite:"lax",
-            maxAge: 24*60*60*1000
-        })
+    const isProduction = req.secure || req.headers["x-forwarded-proto"] === "https";
+
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  maxAge: 24 * 60 * 60 * 1000
+});
+
 
         
 

@@ -1,5 +1,5 @@
 import express, { urlencoded } from "express"
-import mongoose from "mongoose"
+import mongoose, { connect } from "mongoose"
 import productRoutes from  "./routes/productRoutes.js";
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -16,6 +16,7 @@ import { migrateProductCategories, seed , migrateCategoryIds} from "./controller
 import offerRoute from "./routes/offerRoute.js"
 import userOfferRoutes from "./routes/userOfferRoutes.js";
 import sliderRoute from "./routes/sliderRoute.js"
+import connectDB  from "./connectDB.js";
 const app = express()
 const allowedOrigins = [
   "http://localhost:5173",
@@ -29,14 +30,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended:true}))
 
-mongoose.connect(process.env.MONGO_URI)
-.then( () => console.log("Database is connected"))
-.catch( (err) => console.log(err) )
+connectDB()
 
 app.use(cors({
     origin: allowedOrigins,
     methods: ["GET", 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
+    credentials: true // ✅ required for cookies
 }))
 app.use("/uploads", express.static("uploads"));
 app.use("/user" , authRoutes);
