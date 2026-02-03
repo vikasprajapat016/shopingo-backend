@@ -21,9 +21,12 @@ const app = express()
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://shopingo-admin-panel-nxbvov945-vikas-projects-255d0fe9.vercel.app",
-  "https://shopingo-admin-panel-git-main-vikas-projects-255d0fe9.vercel.app",
-  "https://shopingo-admin-panel.vercel.app"
+  "https://shopingo-hnl53b8d1-vikas-projects-255d0fe9.vercel.app",
+  "https://shopingo-git-main-vikas-projects-255d0fe9.vercel.app",
+  "https://shopingo-phi.vercel.app",
+  "https://shopingo-admin-panel-n6rub8xkb-vikas-projects-255d0fe9.vercel.app/admin/login",
+  "https://shopingo-admin-panel-git-main-vikas-projects-255d0fe9.vercel.app/",
+  "https://shopingo-admin-panel.vercel.app/"
 ];
 dotenv.config();
 app.use(cookieParser());
