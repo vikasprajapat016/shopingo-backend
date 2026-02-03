@@ -24,8 +24,8 @@ const allowedOrigins = [
   "https://shopingo-hnl53b8d1-vikas-projects-255d0fe9.vercel.app",
   "https://shopingo-git-main-vikas-projects-255d0fe9.vercel.app",
   "https://shopingo-phi.vercel.app",
-  "https://shopingo-admin-panel-n6rub8xkb-vikas-projects-255d0fe9.vercel.app",
-  "https://shopingo-admin-panel-git-main-vikas-projects-255d0fe9.vercel.app",
+  "https://shopingo-admin-panel-a6kwykwtu-vikas-projects-255d0fe9.vercel.app/admin/login",
+  "https://shopingo-admin-panel-git-main-vikas-projects-255d0fe9.vercel.app/",
   "https://shopingo-admin-panel.vercel.app"
 ];
 dotenv.config();
@@ -36,10 +36,19 @@ app.use(express.urlencoded({ extended:true}))
 connectDB()
 
 app.use(cors({
-    origin: allowedOrigins,
-    methods: ["GET", 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true 
-}))
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // allow server-to-server & Postman
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+}));
+
 app.use("/uploads", express.static("uploads"));
 app.use("/user" , authRoutes);
 app.use("/products", productRoutes);
