@@ -3,6 +3,9 @@ import Products from "../models/productModel.js"
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken"
 
+   const isProd = process.env.NODE_ENV === "production";
+
+
 export const signUp = async(req, res, ) =>{
     console.log("user on signup")
   const {username, email, password, role } = req.body || {};
@@ -94,15 +97,13 @@ export const signIn = async(req, res) => {
             {expiresIn: "1d"},
         )
 
-    const isProduction = req.secure || req.headers["x-forwarded-proto"] === "https";
 
 res.cookie("token", token, {
   httpOnly: true,
-  secure: isProduction,
-  sameSite: isProduction ? "none" : "lax",
-  maxAge: 24 * 60 * 60 * 1000
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  maxAge: 24 * 60 * 60 * 1000,
 });
-
 
         
 
@@ -131,11 +132,12 @@ res.cookie("token", token, {
 
 export const logout = (req, res) => {
   try {
-      res.clearCookie("token", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false
-      });
+    res.clearCookie("token", {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+});
+
     res.status(200).json({
         success: true,
         message: "User logout successfully"
