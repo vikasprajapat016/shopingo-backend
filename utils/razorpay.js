@@ -3,7 +3,7 @@ import Razorpay from "razorpay";
 if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
   console.warn("⚠️ Razorpay keys missing. Online payment disabled.");
 }
-console.log(process.env.RAZORPAY_KEY_ID)
+// console.log(process.env.RAZORPAY_KEY_ID)
 
 const razorpay = process.env.RAZORPAY_KEY_ID
   ? new Razorpay({

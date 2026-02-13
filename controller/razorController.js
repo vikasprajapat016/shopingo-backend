@@ -8,7 +8,7 @@ import crypto from "crypto";
    COMMON CALCULATION FUNCTION
 --------------------------------*/
 const calculateOrderData = async (items, offerId) => {
-  console.log("ITEMS:", items);
+  // console.log("ITEMS:", items);
 
 const productIds = items.map(i => i.product.toString());
 
@@ -20,7 +20,7 @@ if (products.length !== items.length) {
   throw new Error("One or more products not found");
 }
 const productMap = new Map(products.map(p => [p._id.toString(), p]));
-console.log("PRODUCT MAP:", productMap);
+// console.log("PRODUCT MAP:", productMap);
 
   // stock check
   for (let item of items) {
@@ -80,7 +80,7 @@ totalAmount = Math.max(1, totalAmount);
 --------------------------------*/
 export const createOrder = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
+    // console.log("BODY:", req.body);
 
     const { items, offerId, paymentMethod } = req.body;
     const userId = req.user._id;
