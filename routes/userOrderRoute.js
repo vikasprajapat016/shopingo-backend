@@ -1,8 +1,8 @@
 // routes/orderRoutes.js
 import express from "express";
 import authMiddleware from "../middlewares/authMiddlewares.js";
-import { cancelOrder, createOrder, getMyOrders } from "../controller/orderController.js";
-
+import { cancelOrder, getMyOrders } from "../controller/orderController.js";
+import { createOrder } from "../controller/razorController.js";
 const router = express.Router();
 
 router.post(

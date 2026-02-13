@@ -41,7 +41,7 @@ export const getSingleOrder = async (req,res) => {
 
 export const createOrder = async (req, res) => {
   try {
-    const { items, offerId } = req.body;
+    const {items, offerId, paymentMethod } = req.body;
     const userId = req.user._id;
 
     if (!items || items.length === 0)
@@ -90,8 +90,8 @@ export const createOrder = async (req, res) => {
     }, 0);
     totalAmount -= discount;
 
-    // Save order
-    const order = await Order.create({
+    if (paymentMethod === "COD") {
+       const order = await Order.create({
       user: userId,
       items: items.map(item => {
         const p = productMap.get(item.product.toString());
@@ -107,13 +107,61 @@ export const createOrder = async (req, res) => {
       offer: offerId || null,
     });
 
+        res.status(201).json({ message: "Order placed successfully", order });
+
+    } 
+    else if(paymentMethod === "ONLINE") {
+      const {razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature 
+      } = req.body
+
+
+      const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+      const expectedSignature = crypto
+      .createHmac("sha256" ,process.env.RAZORPAY_KEY_SECRET)
+      .update(body)
+      .digest("hex")
+
+
+      if (expectedSignature != razorpay_signature) {
+        res.status(400).json({
+          message: "payment verification failed"
+        })
+      }
+
+         const order = await Order.create({
+      user: userId,
+      items: items.map(item => {
+        const p = productMap.get(item.product.toString());
+        return {
+          product: p._id,
+          title: p.title,
+          price: p.price,
+          quantity: item.quantity,
+          thumbnail: p.thumbnail,
+        };
+      }),
+      paymentMethod,
+      totalAmount,
+      offer: offerId || null,
+    });
+
+    
+          res.status(201).json({ message: "Order placed successfully", order });
+
+
+    }
+
+   
+
     // Reduce stock
     for (let item of items) {
       const product = productMap.get(item.product.toString());
       await Products.findByIdAndUpdate(product._id, { $inc: { stock: -item.quantity } });
     }
 
-    res.status(201).json({ message: "Order placed successfully", order });
   } catch (error) {
     console.error("Order creation failed:", error);
     res.status(500).json({ message: "Failed to place order", error: error.message });

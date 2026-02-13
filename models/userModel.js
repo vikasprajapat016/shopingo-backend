@@ -15,7 +15,9 @@ const userSchema = mongoose.Schema({
 ,
     password: {
         type: String,
-        required: true
+        required: function () {
+            return ! this.isGoogleUser
+        }
     },
     profilepic: {
         type: String,
@@ -31,6 +33,8 @@ const userSchema = mongoose.Schema({
       "USER"
     ],
     default: "USER"},
+
+    isGoogleUser: Boolean,
     blocked: {
         type: Boolean,
         default: false,

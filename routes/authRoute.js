@@ -1,5 +1,5 @@
 import express from "express"
-import { logout, signIn, signUp } from "../controller/auth.js";
+import { googleAuth, logout, signIn, signUp } from "../controller/auth.js";
 import authMiddleware from "../middlewares/authMiddlewares.js";
 import { updateProfile } from "../controller/updateUser.js";
 import { upload } from "../middlewares/upload.js";
@@ -13,6 +13,8 @@ router.get("/me", authMiddleware, (req, res) => {
     res.status(200).json({user: req.user});
       console.log(req.user);
 });
+
+router.post("/google/auth", googleAuth);
 
 router.put(
   '/profile',

@@ -1,9 +1,11 @@
+import "./env.js"
+
+
 import express, { urlencoded } from "express"
 import mongoose, { connect } from "mongoose"
 import productRoutes from  "./routes/productRoutes.js";
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import dotenv from "dotenv"
 import authRoutes from "./routes/authRoute.js";
 import adminRoutes from "./routes/adminRoutes.js"
 import uploadFile from "./routes/uploadFile.js"
@@ -17,6 +19,10 @@ import offerRoute from "./routes/offerRoute.js"
 import userOfferRoutes from "./routes/userOfferRoutes.js";
 import sliderRoute from "./routes/sliderRoute.js"
 import connectDB  from "./connectDB.js";
+import razorRoute from "./routes/razorpayRoute.js"
+
+
+
 const app = express()
 const allowedOrigins = [
   "http://localhost:5173",
@@ -28,7 +34,6 @@ const allowedOrigins = [
   "https://shopingo-admin-panel-git-main-vikas-projects-255d0fe9.vercel.app",
   "https://shopingo-admin-panel.vercel.app"
 ];
-dotenv.config();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended:true}))
@@ -62,7 +67,7 @@ app.use("/cart", cartRoute)
 app.use("/admin",offerRoute)
 app.use("/admin", sliderRoute)
 app.use("/user", userOfferRoutes)
-
+app.use("/razor", razorRoute)
 
 
 app.use("/create", migrateCategoryIds)

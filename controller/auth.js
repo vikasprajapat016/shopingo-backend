@@ -2,6 +2,7 @@ import User from "../models/userModel.js"
 import Products from "../models/productModel.js"
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken"
+import admin from "../utils/firebase.js";
 
    const isProd = process.env.NODE_ENV === "production";
 
@@ -149,6 +150,62 @@ export const logout = (req, res) => {
     })
   }
 }
+
+
+
+
+// Google auth 
+export const googleAuth = async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({ message: "ID token missing" });
+    }
+
+    const decoded = await admin.auth().verifyIdToken(idToken);
+    const { name, email, picture } = decoded;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        username: name,
+        email,
+        profilepic: picture,
+        role: "USER",
+        isGoogleUser: true
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Auth successful",
+      user,
+    });
+
+  } catch (error) {
+    console.error("Google Auth Backend Error:", error);
+    res.status(500).json({
+      message: "Google auth failed",
+      error: error.message,
+    });
+  }
+};
+
 
 
 export const saveProducts = async (req , res) => {
